@@ -4,6 +4,22 @@ A Node.js backend that sends one digest email per user per day instead of an ema
 
 This is the companion project for [Batch notifications into a daily digest in Node.js](https://www.courier.com/docs/guides/batch-notifications-into-a-daily-digest-in-node) in the Courier docs.
 
+## Build it with a coding agent
+
+Paste this into Claude Code, Cursor, or Codex:
+
+```text
+Add a daily comment digest to this Node.js app with Courier, instead of one email per comment.
+Follow https://www.courier.com/docs/guides/batch-notifications-into-a-daily-digest-in-node.md
+and the reference app at https://github.com/trycourier/courier-node-digest-quickstart.
+Use @trycourier/courier and read COURIER_API_KEY from the environment.
+Define the journey (API trigger, per-user Batch node, email send node) in a setup script,
+and invoke it once per comment with an Idempotency-Key built from the comment id.
+When done, run the setup script with DIGEST_WINDOW=PT1M, post three test comments, and show me the run ids.
+```
+
+Install the Courier skill with `npx skills add trycourier/courier-skills`, and connect the [Courier MCP server](https://www.courier.com/docs/resources/mcp) so the agent can read Courier Logs and templates itself.
+
 ## What it shows
 
 - **The journey, defined in code** — `scripts/setup.ts` creates (or updates) a journey with an API trigger, a per-user Batch node, and a send node, plus the digest email template that loops over the batched comments.
@@ -24,6 +40,12 @@ cp .env.example .env
 
 In `.env`, paste your key from [Platform → API Keys](https://app.courier.com/settings/api-keys) and set `DEMO_EMAIL` to your own address. [Connect an email provider](https://www.courier.com/docs/integrations/email/overview), such as Resend, SendGrid, or Postmark, in the same environment as the key. Without one, a Test key still sends through Courier's testing provider, which delivers only to your workspace teammates, up to 100 emails.
 
+Check the key and provider with one plain email. It prints a request id you can find in [Courier's logs](https://app.courier.com/logs):
+
+```bash
+npm run first-send
+```
+
 To see the digest in a minute rather than a day, set `DIGEST_WINDOW=PT1M` in `.env`. Then build the journey:
 
 ```bash
@@ -42,7 +64,7 @@ In a second terminal, post three comments:
 npm run send
 ```
 
-About a minute after the first comment, one email lands at `DEMO_EMAIL`: "You have 3 new comments", followed by all three. This one-minute window has been run end to end and delivers a single digest with every comment. Open the run in [Courier's logs](https://app.courier.com/logs) to see it wait at the Batch node and then send.
+About a minute after the first comment, one email lands at `DEMO_EMAIL`: "Comments since your last digest: 3", followed by all three. This one-minute window has been run end to end and delivers a single digest with every comment. Open the run in [Courier's logs](https://app.courier.com/logs) to see it wait at the Batch node and then send.
 
 Set `DIGEST_WINDOW=P1D` and rerun `npm run setup` to switch back to a daily digest. The script updates the same journey.
 
@@ -55,7 +77,7 @@ Your app                         Courier
    |-- POST /journeys/{id}/invoke ->|   comment 2 joins it
    |-- POST /journeys/{id}/invoke ->|   comment 3 joins it
    |                                |
-   |                  window closes |-- one email: "You have 3 new comments"
+   |                  window closes |-- one email: "Comments since your last digest: 3"
 ```
 
 The first comment's run owns the batch and continues to the send node when the batch releases. Later comments end at the Batch node. A batch releases on whichever comes first:
@@ -80,6 +102,7 @@ The template reads `data.batch.count` (every comment) and loops over `data.batch
 
 | | |
 |---|---|
+| `npm run first-send` | Send one plain email to `DEMO_EMAIL` |
 | `npm run setup` | Create or update the journey and its digest template, then publish both |
 | `npm run dev` | Start the comment endpoint on port 3000, reloading on change |
 | `npm run send` | Post three comments to the running server |

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Courier daily digest: Node.js quickstart",
+  "description": "A Node.js and Express backend that batches comment notifications into one daily digest email per user with a Courier journey's Batch node.",
+  "rules": [
+    "Use the @trycourier/courier SDK and read COURIER_API_KEY from the environment, on the server only.",
+    "Define the journey (API trigger, per-user Batch node, email send node) in code with client.journeys.create, replace, and publish.",
+    "Call client.journeys.invoke once per event, with an Idempotency-Key built from the event's database id.",
+    "Batch wait_period is 1 minute to 1 day, and max_wait_period is at least wait_period and at most 7 days. Use PT1M to test.",
+    "Connect the email provider (Resend, SendGrid, Postmark) in Courier instead of calling it directly."
+  ]
+}

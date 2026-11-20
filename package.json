@@ -8,6 +8,7 @@
     "node": ">=22.18.0"
   },
   "scripts": {
+    "first-send": "tsx --env-file=.env scripts/first-send.ts",
     "setup": "tsx --env-file=.env scripts/setup.ts",
     "dev": "tsx watch --env-file=.env server.ts",
     "start": "tsx --env-file=.env server.ts",

@@ -32,7 +32,7 @@ const notification = {
         channel: "email",
         elements: [
           { type: "meta" as const, title: "New comments on your posts" },
-          { type: "text" as const, content: "You have {{data.batch.count}} new comments." },
+          { type: "text" as const, content: "Comments since your last digest: {{data.batch.count}}" },
           {
             type: "text" as const,
             loop: "data.batch.items",
