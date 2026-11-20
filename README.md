@@ -22,7 +22,7 @@ npm install
 cp .env.example .env
 ```
 
-In `.env`, paste your key from [Platform → API Keys](https://app.courier.com/settings/api-keys) and set `DEMO_EMAIL` to the address you signed up to Courier with. Courier's built-in test email provider delivers to members of your own workspace, so you need no provider for the demo. To email anyone else, [connect your own provider](https://www.courier.com/docs/integrations/email/overview), such as Resend, SendGrid, or Postmark.
+In `.env`, paste your key from [Platform → API Keys](https://app.courier.com/settings/api-keys) and set `DEMO_EMAIL` to your own address. [Connect an email provider](https://www.courier.com/docs/integrations/email/overview), such as Resend, SendGrid, or Postmark, in the same environment as the key. Without one, a Test key still sends through Courier's testing provider, which delivers only to your workspace teammates, up to 100 emails.
 
 To see the digest in a minute rather than a day, set `DIGEST_WINDOW=PT1M` in `.env`. Then build the journey:
 
@@ -42,7 +42,7 @@ In a second terminal, post three comments:
 npm run send
 ```
 
-About a minute after the first comment, one email lands at `DEMO_EMAIL`: "You have 3 new comments", followed by all three. Open the run in [Courier's logs](https://app.courier.com/logs) to see it wait at the Batch node and then send.
+About a minute after the first comment, one email lands at `DEMO_EMAIL`: "You have 3 new comments", followed by all three. This one-minute window has been run end to end and delivers a single digest with every comment. Open the run in [Courier's logs](https://app.courier.com/logs) to see it wait at the Batch node and then send.
 
 Set `DIGEST_WINDOW=P1D` and rerun `npm run setup` to switch back to a daily digest. The script updates the same journey.
 
@@ -89,7 +89,7 @@ The template reads `data.batch.count` (every comment) and loops over `data.batch
 
 **`npm run setup` fails with `channel "email" is not configured`.** The API key's environment has no email provider. Use a key from the environment where your provider is connected, or connect one in [Integrations](https://app.courier.com/integrations/catalog).
 
-**The digest never arrives.** Check that `DEMO_EMAIL` is your Courier login email, or that your own provider is connected. Then open the run in the [journey logs](https://www.courier.com/docs/monitor/logs#journey-logs): a run waiting at the Batch node is still inside its window.
+**The digest never arrives.** Check that an email provider is connected in the key's environment. Courier's testing provider covers only a Test key, only your workspace teammates, and only up to 100 emails. Then open the run in the [journey logs](https://www.courier.com/docs/monitor/logs#journey-logs): a run waiting at the Batch node is still inside its window.
 
 **Three emails arrive instead of one.** The journey was published without the Batch node. Rerun `npm run setup`.
 
