@@ -1,5 +1,7 @@
 {
   "$schema": "https://context7.com/schema/context7.json",
+  "url": "https://context7.com/trycourier/courier-node-digest-quickstart",
+  "public_key": "pk_U3bU2CvznIef5RMDpii82",
   "projectTitle": "Courier daily digest: Node.js quickstart",
   "description": "A Node.js and Express backend that batches comment notifications into one daily digest email per user with a Courier journey's Batch node.",
   "rules": [
