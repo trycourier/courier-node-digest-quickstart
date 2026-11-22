@@ -20,8 +20,15 @@ app.post("/posts/:postId/comments", async (req, res) => {
   // user and sends to DEMO_EMAIL so the digest reaches you.
   const postAuthor = { id: "user_123", email: process.env.DEMO_EMAIL! };
 
-  const runId = await notifyNewComment(postAuthor, comment);
-  res.status(201).json({ comment, runId });
+  try {
+    const runId = await notifyNewComment(postAuthor, comment);
+    res.status(201).json({ comment, runId });
+  } catch (error) {
+    // The comment is saved either way. Log the failed invoke and retry it later
+    // with the same comment id, rather than failing a request the client may repeat.
+    console.error(`Digest invoke failed for comment ${comment.id}:`, error);
+    res.status(201).json({ comment, runId: null });
+  }
 });
 
 const port = Number(process.env.PORT ?? 3000);
