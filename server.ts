@@ -24,8 +24,10 @@ app.post("/posts/:postId/comments", async (req, res) => {
     const runId = await notifyNewComment(postAuthor, comment);
     res.status(201).json({ comment, runId });
   } catch (error) {
-    // The comment is saved either way. Log the failed invoke and retry it later
-    // with the same comment id, rather than failing a request the client may repeat.
+    // The comment is saved, so don't fail a request the client may repeat.
+    // This demo only logs the failure, which leaves the comment out of the
+    // digest. In your app, queue a retry keyed by the comment id: the same
+    // Idempotency-Key makes a repeated invoke safe.
     console.error(`Digest invoke failed for comment ${comment.id}:`, error);
     res.status(201).json({ comment, runId: null });
   }

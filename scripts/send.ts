@@ -30,6 +30,9 @@ async function main() {
       throw new Error(`POST /posts/post_1/comments returned ${response.status}: ${await response.text()}`);
     }
     const { runId } = await response.json();
+    if (!runId) {
+      throw new Error("The comment was saved, but the digest invoke failed. Check the server's log.");
+    }
     console.log(`Comment added to the batch. Run id: ${runId}`);
   }
 
