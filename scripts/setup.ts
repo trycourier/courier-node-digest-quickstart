@@ -54,6 +54,8 @@ function nodes(templateId?: string): Courier.JourneyNode[] {
     {
       type: "batch",
       scope: "user",
+      // Both windows are WINDOW, so each digest sends one WINDOW after its first
+      // comment. Shorten wait_period to send sooner when comments stop coming.
       // Quiet window: release once no comment has arrived for this long (1 minute to 1 day).
       wait_period: WINDOW,
       // Hard ceiling from the first comment (at least wait_period, at most 7 days).
