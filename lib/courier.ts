@@ -34,7 +34,7 @@ export async function notifyNewComment(recipient: Recipient, comment: Comment) {
     },
     // A retry for the same comment returns the first run instead of adding it twice.
     "Idempotency-Key": `comment-${comment.id}`,
-  });
+  }, { maxRetries: 0 }); // The comment request is waiting, so fail fast and retry from a queue.
 
   return runId;
 }
