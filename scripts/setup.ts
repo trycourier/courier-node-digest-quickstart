@@ -17,8 +17,6 @@ const notification = {
   subscription: null,
   content: {
     version: "2022-01-01" as const,
-    // Strict scope: every variable path starts with `data.`.
-    scope: "strict" as const,
     elements: [
       {
         type: "channel" as const,
