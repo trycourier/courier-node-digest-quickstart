@@ -1,22 +1,15 @@
 import type Courier from "@trycourier/courier";
 import { courier } from "../lib/courier.ts";
 
-/**
- * Creates the comment digest journey, or updates it when
- * COURIER_DIGEST_JOURNEY_ID is set. Safe to rerun after any edit below.
- *
- *   trigger (API invoke) -> batch (per user) -> send (digest email) -> exit
- */
+// Creates the digest journey, or updates it when COURIER_DIGEST_JOURNEY_ID is set. Safe to rerun.
 
 const JOURNEY_NAME = "Comment digest";
 const TEMPLATE_NAME = "Comment digest email";
 
-// How long a batch collects before the digest sends. P1D is a daily digest.
-// Set DIGEST_WINDOW=PT1M and rerun this script to test in a minute.
+// P1D is a daily digest. Set DIGEST_WINDOW=PT1M and rerun this script to test in a minute.
 const WINDOW = process.env.DIGEST_WINDOW || "P1D";
 
-// The digest email. `data.batch.count` is every comment in the batch, and the
-// looped text element repeats once per retained comment in `data.batch.items`.
+// The looped text element repeats once per retained comment in `data.batch.items`.
 const notification = {
   name: TEMPLATE_NAME,
   tags: [],
@@ -54,9 +47,7 @@ function nodes(templateId?: string): Courier.JourneyNode[] {
     {
       type: "batch",
       scope: "user",
-      // Both windows are WINDOW, so each digest sends one WINDOW after its first
-      // comment. Shorten wait_period to send sooner when comments stop coming.
-      // Quiet window: release once no comment has arrived for this long (1 minute to 1 day).
+      // Equal windows send each digest one WINDOW after its first comment.
       wait_period: WINDOW,
       // Hard ceiling from the first comment (at least wait_period, at most 7 days).
       max_wait_period: WINDOW,

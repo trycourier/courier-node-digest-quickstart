@@ -14,13 +14,7 @@ export type Recipient = {
   email: string;
 };
 
-/**
- * Adds one comment to the post author's digest.
- *
- * Call it once per comment. The journey's Batch node holds every comment for
- * the same user and sends one email when the window closes, so this function
- * never decides whether to send now or later.
- */
+// Call once per comment. The journey's Batch node, not this function, decides when to send.
 export async function notifyNewComment(recipient: Recipient, comment: Comment) {
   const journeyId = process.env.COURIER_DIGEST_JOURNEY_ID;
   if (!journeyId) {

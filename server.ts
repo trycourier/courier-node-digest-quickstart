@@ -16,18 +16,14 @@ app.post("/posts/:postId/comments", async (req, res) => {
     text,
   };
 
-  // A real app loads the post's author from its database. The demo pins one
-  // user and sends to DEMO_EMAIL so the digest reaches you.
+  // Demo author at DEMO_EMAIL. A real app loads the post's author from its database.
   const postAuthor = { id: "user_123", email: process.env.DEMO_EMAIL! };
 
   try {
     const runId = await notifyNewComment(postAuthor, comment);
     res.status(201).json({ comment, runId });
   } catch (error) {
-    // The comment is saved, so don't fail a request the client may repeat.
-    // This demo only logs the failure, which leaves the comment out of the
-    // digest. In your app, queue a retry keyed by the comment id: the same
-    // Idempotency-Key makes a repeated invoke safe.
+    // The comment is saved, so keep the 201. Your app should queue a retry with the same Idempotency-Key.
     console.error(`Digest invoke failed for comment ${comment.id}:`, error);
     res.status(201).json({ comment, runId: null });
   }
